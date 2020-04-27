@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %} 搜索结果 {%endblock %}
+
+{% block body %}
+    <div class="container" style="margin-left:  200px">
+    <h3 style="color: #3c763d">搜索结果如下：</h3>
+    <div class="row" >
+        <div class="col-md-9" style="float: left">
+        {% if page_entry %}
+            {% for entry in page_entry %}
+                <br />
+                <h2><a href="{% url 'blog:detail' entry.id %}">{{ forloop.counter }}.{{ entry.title }}</a></h2>
+                {% if entry.image %}
+                <img src="{{ entry.image.url }}">
+                {% endif %}
+                {% if entry.abstract %}
+                    <p>{{ entry.abstract }}</p>
+                {% else %}
+                <p>{{ entry.body|truncatechars:128 }}</p>
+                {% endif %}
+                <p>
+                <span>作者：{{ entry.author }} |</span>
+                <span>&nbsp;&nbsp;&nbsp;发表时间：{{ entry.created_time }} |</span>
+                <span>&nbsp;&nbsp;&nbsp;浏览量：{{ entry.visiting }}</span>
+                </p>
+
+            {% endfor %}
+        {% else %}
+        <h2>抱歉！暂无搜索结果</h2>
+        {% endif %}
+        </div>
+
+    </div>
+
+    </div>
+    <div class="pagenation">
+                {# 判断是否还有上页内容#}
+                {% if page_entry.has_previous %}
+				<a href="{% url 'blog:search' page_entry.previous_page_number %}?search={{ search }}"><上一页></上一页></a>
+                {% endif %}
+
+                {% for pindex in page_entry.paginator.page_range %}
+                    {% if pindex == page_entry.number %}
+				        <a href="{% url 'blog:search' pindex %}?search={{ search }}" class="active">{{ pindex }}</a>
+                    {% else %}
+                        <a href="{% url 'blog:search' pindex %}?search={{ search }}">{{ pindex }}</a>
+				    {% endif %}
+                {% endfor %}
+                {% if page_entry.has_next %}
+				<a href="{% url 'blog:search' page_entry.next_page_number %}?search={{ search }}">下一页></a>
+                {% endif %}
+			</div>
+
+
+
+{% endblock %}

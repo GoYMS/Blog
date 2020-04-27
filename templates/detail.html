@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+
+{% block title %}{{ entry.title }} {% endblock title %}
+
+{% block body %}
+<div class="container" style="margin-left:  200px">
+    <div class="row">
+        <div class="col-md-9" >
+            <h1>{{ entry.title }}</h1>
+            <P>
+                <strong>{{ entry.author }}</strong>
+                &nbsp;&nbsp;&nbsp;&nbsp;{{ entry.created_time}}
+                &nbsp;&nbsp;&nbsp;&nbsp;分类:
+                {% for category in entry.category.all %}
+                    &nbsp;&nbsp; <a href="{% url 'blog:category' category.id  1 %}">{{category.name  }}</a>
+                {% endfor %}
+                &nbsp;&nbsp;&nbsp;&nbsp;标签:
+                {% for tage in entry.tags.all %}
+                    &nbsp;&nbsp; <a href="{% url 'blog:tag' tage.id  1 %}">{{ tage.name }}</a>
+                {% endfor %}
+                &nbsp;&nbsp;&nbsp;&nbsp;浏览量:
+                &nbsp;&nbsp; {{ entry.visiting }}
+            </P>
+                {% if entry.image %}
+                <img src="{{ entry.image.url }}">
+                {% endif %}
+            <hr />
+
+        <p>
+             {{ entry.body |safe   }}
+
+
+        </p>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+{% endblock body %}
+ {% block detail %}
+
+        <div class="widget" >
+                 <h3>文章目录</h3>
+                {{ entry.toc |safe   }}
+
+        </div>
+
+{% endblock %}

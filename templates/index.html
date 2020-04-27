@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load blog_new %}
+
+{% block title %} 博客首页 {%endblock %}
+
+{% block body %}
+    <div class="container" style="margin-left: 200px;">
+    <div class="row" >
+        <div class="col-md-9" >
+            {% for entry in page_entry %}
+                <br />
+                <h2><a href="{% url 'blog:detail' entry.id %}">{{ entry.title }}</a></h2>
+                {% if entry.image %}
+                <img src="{{ entry.image.url }}">
+                {% endif %}
+                {% if entry.abstract %}
+                    <p>{{ entry.abstract }}</p>
+                {% else %}
+                <p>{{ entry.body|truncatechars:128 }}</p>
+                {% endif %}
+                <p>
+                <span>作者：{{ entry.author }} |</span>
+                <span>&nbsp;&nbsp;&nbsp;发表时间：{{ entry.created_time }} |</span>
+                <span>&nbsp;&nbsp;&nbsp;浏览量：{{ entry.visiting }}</span>
+                </p>
+
+            {% endfor %}
+        </div>
+    </div>
+
+
+    </div>
+
+
+    <div class="pagenation">
+                {# 判断是否还有上页内容#}
+                {% if page_entry.has_previous %}
+				<a href="{% url 'blog:index' page_entry.previous_page_number %}"><上一页></上一页></a>
+                {% endif %}
+
+                {% for pindex in page_entry.paginator.page_range %}
+                    {% if pindex == page_entry.number %}
+				        <a href="{% url 'blog:index' pindex %}" class="active">{{ pindex }}</a>
+                    {% else %}
+                        <a href="{% url 'blog:index' pindex %}">{{ pindex }}</a>
+				    {% endif %}
+                {% endfor %}
+                {% if page_entry.has_next %}
+				<a href="{% url 'blog:index' page_entry.next_page_number %}">下一页></a>
+                {% endif %}
+			</div>
+
+
+
+{% endblock %}

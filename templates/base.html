@@ -1,0 +1,178 @@
+{% load blog_new %}
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>{% block title %}基本模板{% endblock title%}</title>
+
+    <!-- Bootstrap -->
+    <link href="{% static '/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static '/css/footer.css' %}" rel="stylesheet">
+  <link href="{% static '/css/github.css' %}" rel="stylesheet">
+    <link rel="icon" href="{% static '/image/ico.jpg' %}" type="image/x-icon"/>
+     {% block css %}
+    {% endblock %}
+
+
+
+  </head>
+  <body>
+  <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#my-nav" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <img style="height: 45px; width: 80px;float: left " src="{% static 'image/ico.jpg' %}">
+      <a class="navbar-brand" href="{% url 'blog:index' 1 %}">奥特曼的博客</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="my-nav">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="{% url 'blog:index' 1 %}">博客</a></li>
+        <li ><a href="#">关于博主</a></li>
+        <li ><a href="#">联系博主</a></li>
+
+      </ul>
+      <form class="navbar-form navbar-left" method="get" action="{% url 'blog:search' 1 %}">
+        <div class="form-group">
+          <input type="text" class="form-control" name='search' placeholder="Search">
+        </div>
+        <button type="submit" class="btn btn-default">搜索</button>
+      </form>
+      <ul class="nav navbar-nav navbar-right">
+          {% if request.user.is_authenticated %}
+          <h4>用户名：{{ request.user.first_name }}</h4>
+
+        <h4><a href="{% url 'blog:logout' %}">退出</a> </h4>
+          {% else %}
+        <li><a href='/login/weibo/'>登录</a></li>
+        {% endif %}
+
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
+<div class="col-md-3" style="float: right">
+<div class="row2">
+    {% block detail %}
+                 <div class="widget" >
+
+
+
+                 </div>
+    {% endblock %}
+        </div>
+<br>
+    <div class="row2">
+                 <div class="widget" >
+                     <h3>最新博客</h3>
+                 {% get_new_entries as new_entry %}
+                     {% for entry in new_entry %}
+                         <div>
+                            <a href="{% url 'blog:detail' entry.id %}">{{ entry.title }}</a><br>
+                            {{ entry.author }} 发表于： {{ entry.created_time }}
+                         </div>
+
+                     {% endfor %}
+                 </div>
+        </div>
+<br>
+    <div class="row2">
+                 <div class="widget" >
+                     <h3>推荐博客</h3>
+                 {% get_popular_entries as popular_entry %}
+                     {% for entry in popular_entry %}
+                         <div>
+                            <a href="{% url 'blog:detail' entry.id %}">{{ entry.title }}</a>
+                            <span class="badge"> {{ entry.visiting }}</span>
+                         </div>
+
+                     {% endfor %}
+                 </div>
+        </div>
+<br>
+    <div class="row2">
+                 <div class="widget" >
+                     <h3>分类</h3>
+                 {% get_category_entries as category_entry %}
+
+                     {% for category in category_entry %}
+
+                         <a href="{% url 'blog:category' category.id 1 %}">{{ category.name }}</a><br>
+                         <br>
+
+
+                     {% endfor %}
+
+                 </div>
+        </div>
+    <div class="row2">
+                 <div class="widget" >
+                     <h3>标签云</h3>
+                 {% get_tags as tags %}
+
+                     {% for tag in tags %}
+                         <a href="{% url 'blog:tag' tag.id 1 %}">
+                             <span class="label {% cycle 'label-default' 'label-primary' 'label-success' 'label-info' 'label-warning' 'label-danger' %}">{{ tag.name }}</span>
+                         </a>
+                     {% endfor %}
+
+                 </div>
+        </div>
+
+
+</div>
+
+
+  {% block body %}
+
+    {% endblock %}
+{#    返回顶部#}
+    <div class= 'back_to_up'style="position: fixed; bottom: 100px;right: 100px;color: whitesmoke;background: #3c763d;width: 50px;height: 50px;text-align: center">
+   <i style="font-size: 20px;margin: 10px auto" class="glyphicon glyphicon-arrow-up">顶</i>
+
+    </div>
+
+    <div class="footer">
+		<div class="foot_link">
+			<a href="#">关于博客</a>
+			<span>|</span>
+			<a href="#">联系我们</a>
+			<span>|</span>
+			<a href="#">诚招英才</a>
+			<span>|</span>
+			<a href="{% url 'blog:index' 1 %}">博客首页</a>
+		</div>
+		<p>CopyRight © 2020 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 奥特曼的博客&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   All Rights Reserved</p>
+		<p>电话：010-****888&nbsp;&nbsp;&nbsp;&nbsp;京ICP备*******8号</p>
+	</div>
+
+
+
+
+
+
+    <script src="{% static '/js/jquery-1.12.4.min.js' %}"></script>
+
+    <script src="{% static '/js/bootstrap.min.js' %}"></script>
+  <script type="text/javascript">
+      $('.back_to_up').click(function () {
+          window.scrollTo(0,0)
+      })
+
+  </script>
+   {% block script %}
+    {% endblock %}
+  </body>
+</html>
